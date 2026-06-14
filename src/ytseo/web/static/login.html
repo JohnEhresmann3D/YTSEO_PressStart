@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YTSEO — Sign in</title>
+<style>
+:root {
+  --primary: #3D4E8C; --accent: #5B73C8; --accent-glow: rgba(91,115,200,0.22);
+  --bg: #090D18; --surface: #111827; --surface2: #1A2438; --surface3: #222E4A;
+  --border: #2A3654; --text: #E4EAF8; --text-dim: #7A8DB5; --text-muted: #4A5878;
+  --error: #C4422E; --error-bg: rgba(196,66,46,0.12);
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, sans-serif;
+  background: var(--bg); color: var(--text); min-height: 100vh;
+  display: flex; align-items: center; justify-content: center; padding: 1.5rem;
+}
+.card {
+  width: 100%; max-width: 380px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 14px; padding: 2rem 2.25rem;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+}
+.logo {
+  display: flex; align-items: center; gap: 0.75rem;
+  margin-bottom: 1.6rem;
+}
+.logo-mark {
+  width: 38px; height: 38px;
+  background: linear-gradient(135deg, var(--accent), var(--primary));
+  border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; box-shadow: 0 0 18px var(--accent-glow);
+}
+.logo-name {
+  font-size: 1.15rem; font-weight: 800;
+  background: linear-gradient(130deg, var(--text) 30%, var(--accent) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+h1 {
+  font-size: 1rem; font-weight: 700; color: var(--text);
+  margin-bottom: 0.25rem;
+}
+.sub { color: var(--text-dim); font-size: 0.83rem; margin-bottom: 1.4rem; }
+label {
+  display: block; font-size: 0.66rem;
+  text-transform: uppercase; letter-spacing: 0.9px;
+  color: var(--text-muted); font-weight: 700; margin-bottom: 0.35rem;
+}
+input {
+  width: 100%; background: var(--surface2);
+  border: 1px solid var(--border); color: var(--text);
+  border-radius: 6px; padding: 0.6rem 0.8rem;
+  font: inherit; font-size: 0.9rem; outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+.field { margin-bottom: 1rem; }
+button {
+  width: 100%;
+  background: linear-gradient(135deg, var(--accent), var(--primary));
+  border: none; color: #fff;
+  padding: 0.65rem 1rem; border-radius: 6px;
+  font-size: 0.88rem; font-weight: 700; cursor: pointer;
+  text-transform: uppercase; letter-spacing: 0.6px;
+  transition: filter 0.2s ease;
+  margin-top: 0.5rem;
+}
+button:hover { filter: brightness(1.1); }
+.err {
+  background: var(--error-bg); color: var(--error);
+  border: 1px solid rgba(196,66,46,0.3); border-radius: 6px;
+  padding: 0.5rem 0.7rem; font-size: 0.8rem; margin-bottom: 1rem;
+}
+</style>
+</head>
+<body>
+<form class="card" method="POST" action="/login">
+  <div class="logo">
+    <div class="logo-mark">🎬</div>
+    <div class="logo-name">YTSEO</div>
+  </div>
+  <h1>Sign in</h1>
+  <div class="sub">Enter your credentials to continue.</div>
+  {{ERROR}}
+  <div class="field">
+    <label for="username">Username</label>
+    <input id="username" name="username" type="text" autocomplete="username" required autofocus>
+  </div>
+  <div class="field">
+    <label for="password">Password</label>
+    <input id="password" name="password" type="password" autocomplete="current-password" required>
+  </div>
+  <input type="hidden" name="next" value="{{NEXT}}">
+  <button type="submit">Sign in</button>
+</form>
+</body>
+</html>

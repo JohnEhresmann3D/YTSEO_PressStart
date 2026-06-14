@@ -86,7 +86,20 @@ def main():
         browser = pw.chromium.launch(headless=True)
         ctx = browser.new_context(viewport={"width": 1280, "height": 1700}, device_scale_factor=2)
         page = ctx.new_page()
-        page.goto(URL)
+
+        # 0. Login screen (unauthed) — use shorter viewport so card centers in frame
+        page.set_viewport_size({"width": 1280, "height": 720})
+        page.goto(URL + "/login")
+        page.wait_for_selector("form.card")
+        page.wait_for_timeout(300)
+        shot(page, "login", clip={"x": 0, "y": 0, "width": 1280, "height": 720})
+        # Restore tall viewport for the rest
+        page.set_viewport_size({"width": 1280, "height": 1700})
+
+        # Sign in then continue
+        page.fill('input[name="username"]', 'admin')
+        page.fill('input[name="password"]', 'pressstart')
+        page.click('button[type="submit"]')
         page.wait_for_selector(".dropzone")
         page.wait_for_timeout(400)
 

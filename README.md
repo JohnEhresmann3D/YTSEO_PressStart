@@ -198,6 +198,30 @@ That means everything is working. 🎉
 
 ---
 
+## Signing in
+
+The app is protected by a simple username + password gate:
+
+![Login](docs/screenshots/login.png)
+
+Defaults are `admin` / `pressstart` — **change them before exposing the app to the internet.** Set these in your `.env`:
+
+```
+YTSEO_ADMIN_USER=your_username
+YTSEO_ADMIN_PASSWORD=your_long_password
+YTSEO_SESSION_SECRET=<long random string>
+```
+
+`YTSEO_SESSION_SECRET` is what signs your login cookie. If you don't set it, the app generates a fresh one on every restart, which logs everyone out. Generate one with:
+
+```bash
+python -c "import secrets; print(secrets.token_urlsafe(48))"
+```
+
+Once signed in your session lasts 2 weeks. Visit `/logout` to end it early.
+
+---
+
 ## How to use it
 
 ![Settings Panel](docs/screenshots/settings-panel.png)
