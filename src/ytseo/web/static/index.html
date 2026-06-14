@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YTSEO — Video SEO Generator</title>
+<style>
+:root {
+  /* Split-complementary palette from #3D4E8C (H≈227°)
+     Complement: H≈47° (amber-gold)
+     Split-comp 1: H≈17° (red-orange)   → error / TikTok accent
+     Split-comp 2: H≈77° (yellow-green) → success               */
+  --primary:      #3D4E8C;
+  --accent:       #5B73C8;
+  --accent-glow:  rgba(91, 115, 200, 0.22);
+  --warm:         #C4522E;   /* split-comp 1 */
+  --lime:         #7AAE2A;   /* split-comp 2 */
+
+  /* Blue-tinted dark surfaces */
+  --bg:           #090D18;
+  --surface:      #111827;
+  --surface2:     #1A2438;
+  --surface3:     #222E4A;
+  --border:       #2A3654;
+  --border-hi:    rgba(91, 115, 200, 0.45);
+
+  /* Text */
+  --text:         #E4EAF8;
+  --text-dim:     #7A8DB5;
+  --text-muted:   #4A5878;
+
+  /* Semantic — derived from split-comp palette */
+  --success:      #5AA82B;
+  --error:        #C4422E;
+  --warning:      #C4872E;
+  --success-bg:   rgba(90, 168, 43, 0.12);
+  --error-bg:     rgba(196, 66, 46, 0.12);
+  --warning-bg:   rgba(196, 135, 46, 0.12);
+
+  --radius:    10px;
+  --radius-sm:  6px;
+  --radius-lg: 14px;
+  --ease: 0.2s ease;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Header ──────────────────────────────────────────────── */
+header {
+  padding: 0.95rem 2rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: linear-gradient(135deg, #0C1222 0%, var(--surface) 100%);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo { display: flex; align-items: center; gap: 0.75rem; }
+
+.logo-mark {
+  width: 34px;
+  height: 34px;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  box-shadow: 0 0 18px var(--accent-glow);
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.logo-name {
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  background: linear-gradient(130deg, var(--text) 30%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.logo-tagline {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 0.05rem;
+}
+
+.ws-pill {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  padding: 0.28rem 0.65rem;
+  border-radius: 20px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  user-select: none;
+}
+
+.ws-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--error);
+  flex-shrink: 0;
+  transition: background var(--ease);
+}
+
+.ws-dot.live {
+  background: var(--success);
+  animation: dotpulse 2.2s ease infinite;
+}
+
+@keyframes dotpulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(90, 168, 43, 0.5); }
+  50%       { box-shadow: 0 0 0 4px rgba(90, 168, 43, 0); }
+}
+
+/* ── Layout ──────────────────────────────────────────────── */
+.container {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* ── Settings Panel ──────────────────────────────────────── */
+.settings-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.5rem;
+  display: flex;
+  gap: 1.75rem;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.field-label {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.9px;
+  font-weight: 700;
+}
+
+/* Platform pill-toggle */
+.pill-group {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.pill-group button {
+  background: var(--surface2);
+  border: none;
+  border-right: 1px solid var(--border);
+  color: var(--text-dim);
+  padding: 0.45rem 1rem;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all var(--ease);
+  white-space: nowrap;
+}
+
+.pill-group button:last-child { border-right: none; }
+
+.pill-group button.on {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: inset 0 0 16px rgba(0,0,0,0.15);
+}
+
+.pill-group button:hover:not(.on) {
+  background: var(--surface3);
+  color: var(--text);
+}
+
+/* Selects & number input */
+select, input[type="number"], input[type="text"] {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 0.45rem 0.85rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  outline: none;
+  transition: border-color var(--ease), box-shadow var(--ease);
+  cursor: pointer;
+}
+
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 2.2rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%237A8DB5' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+}
+
+select:focus, input[type="number"]:focus, input[type="text"]:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+input[type="number"] { width: 68px; text-align: center; }
+
+/* ── Dropzone ─────────────────────────────────────────────── */
+.dropzone {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius-lg);
+  padding: 3.5rem 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  background: linear-gradient(145deg, var(--surface) 0%, var(--surface2) 100%);
+  margin-bottom: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* glow layer */
+.dropzone::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: calc(var(--radius-lg) - 2px);
+  background: radial-gradient(ellipse at 50% 60%, var(--accent-glow) 0%, transparent 68%);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+
+.dropzone:hover::after, .dropzone.over::after { opacity: 1; }
+
+.dropzone:hover, .dropzone.over {
+  border-color: var(--accent);
+  border-style: solid;
+}
+
+.dropzone.over {
+  background: linear-gradient(145deg, var(--surface2) 0%, var(--surface3) 100%);
+}
+
+.dz-icon {
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 1.1rem;
+  background: var(--surface3);
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+  transition: all 0.25s ease;
+}
+
+.dropzone:hover .dz-icon, .dropzone.over .dz-icon {
+  background: rgba(91, 115, 200, 0.18);
+  border-color: var(--accent);
+  box-shadow: 0 0 22px var(--accent-glow);
+}
+
+.dz-icon svg {
+  width: 22px;
+  height: 22px;
+  stroke: var(--text-dim);
+  transition: stroke 0.25s ease;
+}
+
+.dropzone:hover .dz-icon svg, .dropzone.over .dz-icon svg {
+  stroke: var(--accent);
+}
+
+.dz-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  position: relative;
+  z-index: 1;
+}
+
+.dz-hint {
+  color: var(--text-dim);
+  font-size: 0.81rem;
+  margin-top: 0.35rem;
+  position: relative;
+  z-index: 1;
+}
+
+.dropzone input[type="file"] { display: none; }
+
+/* ── Job List ─────────────────────────────────────────────── */
+.jobs { display: flex; flex-direction: column; gap: 0.85rem; }
+
+.job-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.2rem 1.35rem;
+  transition: transform var(--ease), box-shadow var(--ease), border-color var(--ease);
+  animation: rise 0.28s ease;
+}
+
+.job-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 28px rgba(0, 0, 0, 0.38);
+  border-color: var(--border-hi);
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.job-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.7rem;
+}
+
+.job-name {
+  font-weight: 600;
+  font-size: 0.91rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 65%;
+}
+
+.badge {
+  font-size: 0.67rem;
+  padding: 0.18rem 0.6rem;
+  border-radius: 20px;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.65px;
+  flex-shrink: 0;
+}
+
+.b-queued    { background: var(--surface3); color: var(--text-muted); }
+.b-active    { background: rgba(91,115,200,0.14); color: var(--accent); box-shadow: 0 0 10px rgba(91,115,200,0.12); }
+.b-complete  { background: var(--success-bg); color: var(--success); box-shadow: 0 0 10px rgba(90,168,43,0.1); }
+.b-error     { background: var(--error-bg); color: var(--error); }
+.b-cancelled { background: var(--surface3); color: var(--text-muted); }
+
+.job-detail {
+  font-size: 0.77rem;
+  color: var(--text-dim);
+  margin-bottom: 0.55rem;
+}
+
+.progress-track {
+  height: 3px;
+  background: var(--surface3);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+  border-radius: 2px;
+  transition: width 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.28) 50%, transparent 100%);
+  animation: shim 1.8s ease infinite;
+}
+
+.progress-fill.done { background: linear-gradient(90deg, #3A7A20 0%, var(--success) 100%); }
+.progress-fill.done::after { display: none; }
+
+@keyframes shim {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* ── Results ──────────────────────────────────────────────── */
+.results { margin-top: 1rem; display: none; }
+.results.on { display: block; }
+
+.toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  padding: 0.38rem 0.9rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 0.77rem;
+  margin-top: 0.75rem;
+  transition: all var(--ease);
+}
+
+.toggle-btn:hover {
+  background: var(--surface3);
+  color: var(--text);
+  border-color: var(--border-hi);
+}
+
+.platform-block {
+  background: var(--surface2);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  margin-top: 0.8rem;
+  border-left: 3px solid var(--accent);
+}
+
+.platform-block.tiktok  { border-left-color: var(--warm); }
+.platform-block.youtube { border-left-color: var(--accent); }
+
+.platform-name {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1.3px;
+  font-weight: 800;
+  margin-bottom: 0.9rem;
+  color: var(--accent);
+}
+
+.platform-block.tiktok .platform-name { color: var(--warm); }
+
+.rsec { margin-bottom: 0.7rem; }
+.rsec:last-child { margin-bottom: 0; }
+
+.rlabel {
+  font-size: 0.67rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.9px;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+
+.ritem {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  background: var(--surface);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.8rem;
+  margin-bottom: 0.28rem;
+  font-size: 0.84rem;
+  line-height: 1.45;
+  transition: border-color var(--ease);
+}
+
+.ritem:hover { border-color: var(--border); }
+
+.rtext { flex: 1; white-space: pre-wrap; word-break: break-word; }
+
+.copy-btn {
+  background: var(--surface3);
+  border: none;
+  color: var(--text-muted);
+  padding: 0.2rem 0.52rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.67rem;
+  font-weight: 700;
+  margin-left: 0.7rem;
+  flex-shrink: 0;
+  align-self: flex-start;
+  transition: all var(--ease);
+}
+
+.copy-btn:hover { background: var(--border); color: var(--text); }
+.copy-btn.ok    { background: var(--success-bg); color: var(--success); }
+
+.warn-box {
+  background: var(--warning-bg);
+  border: 1px solid rgba(196,135,46,0.3);
+  border-radius: var(--radius-sm);
+  padding: 0.55rem 0.8rem;
+  font-size: 0.78rem;
+  color: var(--warning);
+  margin-top: 0.75rem;
+}
+
+.raw-box {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 1rem;
+  margin-top: 0.4rem;
+  font-size: 0.78rem;
+  font-family: 'JetBrains Mono', 'Cascadia Code', 'Fira Code', monospace;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 260px;
+  overflow-y: auto;
+  color: var(--text-dim);
+  display: none;
+}
+
+.raw-box.on { display: block; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-mark">🎬</div>
+    <div>
+      <div class="logo-name">YTSEO</div>
+      <div class="logo-tagline">Video SEO Generator</div>
+    </div>
+  </div>
+  <div class="ws-pill">
+    <span class="ws-dot" id="wsDot"></span>
+    <span id="wsLabel">Connecting…</span>
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="settings-panel">
+    <div class="field">
+      <div class="field-label">Platform</div>
+      <div class="pill-group" id="platformToggle">
+        <button class="on" data-v="both">Both</button>
+        <button data-v="tiktok">TikTok</button>
+        <button data-v="youtube">YouTube</button>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-label">Tone</div>
+      <select id="tone">
+        <option value="engaging">Engaging</option>
+        <option value="humorous">Humorous</option>
+        <option value="educational">Educational</option>
+        <option value="controversial">Controversial</option>
+        <option value="storytelling">Storytelling</option>
+      </select>
+    </div>
+    <div class="field">
+      <div class="field-label">Titles</div>
+      <input type="number" id="numTitles" value="5" min="1" max="10">
+    </div>
+    <div class="field">
+      <div class="field-label">Model</div>
+      <select id="modelSelect">
+        <option value="gpt-4o">gpt-4o</option>
+        <option value="gpt-4o-mini">gpt-4o-mini</option>
+        <option value="Meta-Llama-3.1-405B-Instruct">Llama 3.1 405B</option>
+        <option value="Meta-Llama-3.1-70B-Instruct">Llama 3.1 70B</option>
+        <option value="Mistral-large">Mistral Large</option>
+        <option value="Phi-3.5-MoE-instruct">Phi-3.5 MoE</option>
+        <option value="custom">Custom…</option>
+      </select>
+    </div>
+    <div class="field" id="customModelField" style="display:none">
+      <div class="field-label">Model ID</div>
+      <input type="text" id="customModel" placeholder="model-name" style="width:160px">
+    </div>
+  </div>
+
+  <div class="dropzone" id="dropzone">
+    <div class="dz-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+        <polyline points="17 8 12 3 7 8"/>
+        <line x1="12" y1="3" x2="12" y2="15"/>
+      </svg>
+    </div>
+    <div class="dz-title">Drop video files here</div>
+    <div class="dz-hint">or click to browse — MP4, MOV, AVI, MKV, WEBM</div>
+    <input type="file" id="fileInput" multiple accept="video/*,.mp4,.mov,.avi,.mkv,.webm">
+  </div>
+
+  <div class="jobs" id="jobList"></div>
+
+</div>
+
+<script>
+const MIME = new Set(['video/mp4','video/quicktime','video/x-msvideo','video/x-matroska','video/webm','video/avi']);
+const EXTS = new Set(['.mp4','.mov','.avi','.mkv','.webm']);
+
+const $  = s => document.querySelector(s);
+const cards = {};
+let ws = null;
+let platform = 'both';
+
+// ── Platform toggle ──────────────────────────────────────────
+$('#platformToggle').addEventListener('click', e => {
+  const btn = e.target.closest('button');
+  if (!btn) return;
+  $('#platformToggle').querySelectorAll('button').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  platform = btn.dataset.v;
+});
+
+// ── WebSocket ────────────────────────────────────────────────
+function connectWS() {
+  const proto = location.protocol === 'https:' ? 'wss' : 'ws';
+  ws = new WebSocket(`${proto}://${location.host}/ws`);
+  ws.onopen = () => {
+    $('#wsDot').classList.add('live');
+    $('#wsLabel').textContent = 'Live';
+  };
+  ws.onclose = () => {
+    $('#wsDot').classList.remove('live');
+    $('#wsLabel').textContent = 'Reconnecting…';
+    setTimeout(connectWS, 2000);
+  };
+  ws.onmessage = e => onWSMessage(JSON.parse(e.data));
+}
+
+function onWSMessage(msg) {
+  const card = cards[msg.job_id];
+  if (!card) return;
+  if (msg.event === 'progress') {
+    patchCard(card, { status: msg.stage, detail: msg.detail, pct: msg.pct });
+  } else if (msg.event === 'complete') {
+    patchCard(card, { status: 'complete', detail: 'Complete', pct: 100, result: msg.result });
+  } else if (msg.event === 'error') {
+    patchCard(card, { status: 'error', detail: msg.detail, pct: card._pct || 0 });
+  }
+}
+
+// ── Drag & Drop ──────────────────────────────────────────────
+const dz = $('#dropzone');
+const fi = $('#fileInput');
+
+dz.addEventListener('click', () => fi.click());
+dz.addEventListener('dragover',  e => { e.preventDefault(); dz.classList.add('over'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('over'));
+dz.addEventListener('drop', e => {
+  e.preventDefault();
+  dz.classList.remove('over');
+  upload(e.dataTransfer.files);
+});
+fi.addEventListener('change', () => { upload(fi.files); fi.value = ''; });
+
+function isVideo(f) {
+  if (MIME.has(f.type)) return true;
+  const ext = '.' + f.name.split('.').pop().toLowerCase();
+  return EXTS.has(ext);
+}
+
+function selectedModel() {
+  const sel = $('#modelSelect').value;
+  if (sel === 'custom') return $('#customModel').value.trim() || 'gpt-4o';
+  return sel;
+}
+
+// Show/hide custom model input
+$('#modelSelect').addEventListener('change', () => {
+  $('#customModelField').style.display = $('#modelSelect').value === 'custom' ? '' : 'none';
+});
+
+async function upload(files) {
+  const valid = [...files].filter(isVideo);
+  if (!valid.length) return;
+  const form = new FormData();
+  valid.forEach(f => form.append('files', f));
+  const tone      = $('#tone').value;
+  const numTitles = $('#numTitles').value;
+  const model     = selectedModel();
+  try {
+    const res  = await fetch(`/api/upload?platform=${platform}&tone=${tone}&num_titles=${numTitles}&model=${encodeURIComponent(model)}`, { method: 'POST', body: form });
+    const data = await res.json();
+    data.jobs.forEach(j => createCard(j));
+  } catch (e) { console.error('upload failed:', e); }
+}
+
+// ── Cards ────────────────────────────────────────────────────
+function badgeClass(s) {
+  if (s === 'complete')  return 'b-complete';
+  if (s === 'error')     return 'b-error';
+  if (s === 'cancelled') return 'b-cancelled';
+  if (s === 'queued')    return 'b-queued';
+  return 'b-active';
+}
+
+function createCard(job) {
+  const card = document.createElement('div');
+  card.className = 'job-card';
+  card.innerHTML = `
+    <div class="job-top">
+      <span class="job-name">${esc(job.filename)}</span>
+      <span class="badge ${badgeClass(job.status)}" data-badge>${job.status}</span>
+    </div>
+    <div class="job-detail" data-detail>${esc(job.detail || '')}</div>
+    <div class="progress-track">
+      <div class="progress-fill${job.status === 'complete' ? ' done' : ''}" data-fill style="width:${job.pct||0}%"></div>
+    </div>
+    <div class="results" data-results></div>
+  `;
+  card._pct = job.pct || 0;
+  cards[job.job_id] = card;
+  $('#jobList').prepend(card);
+  if (job.status === 'complete' && job.result) renderResults(card, job.result);
+}
+
+function patchCard(card, u) {
+  const badge = card.querySelector('[data-badge]');
+  badge.textContent = u.status;
+  badge.className = `badge ${badgeClass(u.status)}`;
+  card.querySelector('[data-detail]').textContent = u.detail || '';
+  const fill = card.querySelector('[data-fill]');
+  fill.style.width = (u.pct || 0) + '%';
+  if (u.status === 'complete') fill.classList.add('done');
+  card._pct = u.pct || 0;
+  if (u.status === 'complete' && u.result) renderResults(card, u.result);
+}
+
+// ── Results ──────────────────────────────────────────────────
+function renderResults(card, result) {
+  const box = card.querySelector('[data-results]');
+  box.innerHTML = '';
+  box.classList.add('on');
+
+  const cl = result.claude || {};
+
+  if (cl.warning) {
+    const w = document.createElement('div');
+    w.className = 'warn-box';
+    w.textContent = '⚠ ' + cl.warning;
+    box.appendChild(w);
+  }
+
+  (cl.platforms || []).forEach(p => box.appendChild(buildPlatformBlock(p)));
+
+  if (cl.raw_response)  box.appendChild(buildRaw('Raw Response', cl.raw_response));
+  if (cl.raw_analysis)  box.appendChild(buildRaw('Raw Analysis', JSON.stringify(cl.raw_analysis, null, 2)));
+
+  const tx = result.transcription;
+  if (tx && tx.text) box.appendChild(buildRaw('Transcription', tx.text));
+}
+
+function buildPlatformBlock(p) {
+  const block = document.createElement('div');
+  block.className = `platform-block ${p.platform}`;
+
+  const name = el('div', 'platform-name');
+  name.textContent = p.platform === 'tiktok' ? '▲ TikTok' : '▶ YouTube';
+  block.appendChild(name);
+
+  if (p.titles    && p.titles.length)    block.appendChild(buildSection('Titles',      p.titles.map(t => ritem(t))));
+  if (p.description)                     block.appendChild(buildSection('Description', [ritem(p.description)]));
+  if (p.hashtags  && p.hashtags.length)  block.appendChild(buildSection('Hashtags',    [ritem(p.hashtags.join(' '))]));
+  if (p.keywords  && p.keywords.length)  block.appendChild(buildSection('Keywords',    [ritem(p.keywords.join(', '))]));
+
+  return block;
+}
+
+function buildSection(label, items) {
+  const sec = el('div', 'rsec');
+  const lbl = el('div', 'rlabel');
+  lbl.textContent = label;
+  sec.appendChild(lbl);
+  items.forEach(i => sec.appendChild(i));
+  return sec;
+}
+
+function ritem(text) {
+  const row  = el('div', 'ritem');
+  const span = el('span', 'rtext');
+  span.textContent = text;
+  const btn = el('button', 'copy-btn');
+  btn.textContent = 'Copy';
+  btn.addEventListener('click', () => {
+    navigator.clipboard.writeText(span.textContent).then(() => {
+      btn.textContent = 'Copied!';
+      btn.classList.add('ok');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('ok'); }, 1400);
+    });
+  });
+  row.appendChild(span);
+  row.appendChild(btn);
+  return row;
+}
+
+function buildRaw(label, content) {
+  const wrap = document.createElement('div');
+  const btn  = el('button', 'toggle-btn');
+  btn.textContent = `▾ ${label}`;
+  const box  = el('div', 'raw-box');
+  box.textContent = content;
+  btn.addEventListener('click', () => {
+    const open = box.classList.toggle('on');
+    btn.textContent = `${open ? '▴' : '▾'} ${label}`;
+  });
+  wrap.appendChild(btn);
+  wrap.appendChild(box);
+  return wrap;
+}
+
+function el(tag, cls) {
+  const e = document.createElement(tag);
+  e.className = cls;
+  return e;
+}
+
+function esc(s) {
+  const d = document.createElement('div');
+  d.textContent = String(s || '');
+  return d.innerHTML;
+}
+
+// ── Recover jobs on load ─────────────────────────────────────
+async function recover() {
+  try {
+    const res  = await fetch('/api/jobs');
+    const data = await res.json();
+    (data.jobs || []).forEach(j => createCard(j));
+  } catch (e) { console.error(e); }
+}
+
+recover();
+connectWS();
+</script>
+</body>
+</html>

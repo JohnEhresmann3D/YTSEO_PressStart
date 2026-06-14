@@ -1,0 +1,13 @@
+# YTSEO — Python dependencies
+# Install with:  pip install -r requirements.txt
+#
+# NOTE: Python 3.11 or newer is required.
+# NOTE: ffmpeg must also be installed separately (see README).
+
+fastapi>=0.115
+uvicorn[standard]>=0.30
+python-multipart>=0.0.9
+websockets>=12.0
+faster-whisper>=1.0
+openai>=1.0
+python-dotenv>=1.0
