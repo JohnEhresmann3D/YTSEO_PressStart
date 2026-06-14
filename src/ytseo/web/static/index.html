@@ -530,6 +530,301 @@ input[type="number"] { width: 68px; text-align: center; }
 }
 
 .raw-box.on { display: block; }
+
+/* ── Connected Accounts ─────────────────────────────────────── */
+.accounts-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.85rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.acc-label {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.9px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.acc-row {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  padding: 0.32rem 0.7rem 0.32rem 0.55rem;
+  border-radius: 20px;
+  font-size: 0.78rem;
+}
+
+.acc-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.acc-row.on .acc-dot {
+  background: var(--success);
+  box-shadow: 0 0 8px rgba(90, 168, 43, 0.6);
+}
+
+.acc-row.unconfigured .acc-dot {
+  background: var(--warning);
+}
+
+.acc-name { font-weight: 600; color: var(--text); }
+
+.acc-btn {
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  padding: 0.22rem 0.7rem;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: filter var(--ease), opacity var(--ease);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.acc-btn:hover { filter: brightness(1.15); }
+.acc-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.acc-btn.danger { background: var(--surface3); color: var(--text-dim); }
+.acc-btn.danger:hover { background: var(--warm); color: #fff; }
+
+/* ── Post-to-social panel ───────────────────────────────────── */
+.post-panel {
+  margin-top: 1rem;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.95rem 1.2rem;
+}
+
+.post-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.7rem;
+}
+
+.post-head h4 {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 800;
+  color: var(--text);
+  margin: 0;
+}
+
+.post-platform {
+  border-top: 1px solid var(--border);
+  padding-top: 0.85rem;
+  margin-top: 0.85rem;
+}
+
+.post-platform:first-of-type {
+  border-top: none;
+  padding-top: 0;
+  margin-top: 0;
+}
+
+.post-platform-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+}
+
+.post-platform-name {
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 1.1px;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.post-platform.youtube .post-platform-name { color: var(--accent); }
+.post-platform.x .post-platform-name { color: var(--text); }
+
+.post-row { display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 0.6rem; }
+.post-row label {
+  font-size: 0.64rem;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+.post-row input, .post-row textarea, .post-row select {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.7rem;
+  font: inherit;
+  font-size: 0.82rem;
+  outline: none;
+  width: 100%;
+  transition: border-color var(--ease), box-shadow var(--ease);
+}
+
+.post-row textarea { resize: vertical; min-height: 64px; font-family: inherit; }
+
+.post-row input:focus, .post-row textarea:focus, .post-row select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.char-count {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  text-align: right;
+}
+
+.char-count.over { color: var(--error); font-weight: 700; }
+
+.post-btn {
+  background: linear-gradient(135deg, var(--accent), var(--primary));
+  border: none;
+  color: #fff;
+  padding: 0.45rem 1.1rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: filter var(--ease);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.post-btn:hover { filter: brightness(1.12); }
+.post-btn:disabled { opacity: 0.45; cursor: not-allowed; filter: none; }
+
+.post-status {
+  margin-top: 0.55rem;
+  font-size: 0.78rem;
+  padding: 0.45rem 0.7rem;
+  border-radius: var(--radius-sm);
+}
+
+.post-status.posting { background: var(--accent-glow); color: var(--accent); }
+.post-status.ok      { background: var(--success-bg); color: var(--success); }
+.post-status.err     { background: var(--error-bg); color: var(--error); }
+
+.post-status a { color: inherit; font-weight: 700; text-decoration: underline; }
+
+.post-empty {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+}
+
+.post-empty a { color: var(--accent); text-decoration: none; font-weight: 700; }
+.post-empty a:hover { text-decoration: underline; }
+
+/* ── Selectable title rows ──────────────────────────────────── */
+.ritem.title-row { cursor: pointer; gap: 0.6rem; align-items: center; }
+.ritem.title-row input[type="radio"] {
+  accent-color: var(--accent);
+  width: 14px; height: 14px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.ritem.title-row.selected {
+  border-color: var(--accent);
+  background: rgba(91, 115, 200, 0.08);
+}
+
+/* ── Regenerate panel ──────────────────────────────────────── */
+.regen-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.7rem 0.9rem;
+  margin-top: 0.8rem;
+}
+.regen-head {
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 0.9px;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+.regen-checks {
+  display: flex;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.55rem;
+}
+.regen-checks label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.78rem;
+  color: var(--text);
+  cursor: pointer;
+}
+.regen-checks input[type="checkbox"] {
+  accent-color: var(--accent);
+  width: 14px; height: 14px;
+  cursor: pointer;
+}
+.regen-feedback {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: var(--radius-sm);
+  padding: 0.45rem 0.65rem;
+  font: inherit;
+  font-size: 0.82rem;
+  outline: none;
+  margin-bottom: 0.55rem;
+  resize: vertical;
+  min-height: 38px;
+}
+.regen-feedback:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+.regen-btn {
+  background: var(--surface3);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 0.38rem 0.95rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--ease);
+}
+.regen-btn:hover:not(:disabled) {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+.regen-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.regen-status {
+  font-size: 0.75rem;
+  margin-left: 0.6rem;
+  color: var(--text-dim);
+}
+.regen-status.err { color: var(--error); }
+.regen-status.ok  { color: var(--success); }
 </style>
 </head>
 <body>
@@ -589,6 +884,11 @@ input[type="number"] { width: 68px; text-align: center; }
       <div class="field-label">Model ID</div>
       <input type="text" id="customModel" placeholder="model-name" style="width:160px">
     </div>
+  </div>
+
+  <div class="accounts-panel" id="accountsPanel">
+    <div class="acc-label">Connected accounts</div>
+    <div id="accountsList" style="display:flex;gap:0.6rem;flex-wrap:wrap;"></div>
   </div>
 
   <div class="dropzone" id="dropzone">
@@ -651,6 +951,8 @@ function onWSMessage(msg) {
     patchCard(card, { status: 'complete', detail: 'Complete', pct: 100, result: msg.result });
   } else if (msg.event === 'error') {
     patchCard(card, { status: 'error', detail: msg.detail, pct: card._pct || 0 });
+  } else if (msg.event === 'post_result') {
+    onPostResult(card, msg.platform, msg.result);
   }
 }
 
@@ -706,6 +1008,7 @@ function badgeClass(s) {
   if (s === 'error')     return 'b-error';
   if (s === 'cancelled') return 'b-cancelled';
   if (s === 'queued')    return 'b-queued';
+  if (s === 'posting')   return 'b-active';
   return 'b-active';
 }
 
@@ -724,6 +1027,8 @@ function createCard(job) {
     <div class="results" data-results></div>
   `;
   card._pct = job.pct || 0;
+  card._jobId = job.job_id;
+  card._postResults = job.post_results || {};
   cards[job.job_id] = card;
   $('#jobList').prepend(card);
   if (job.status === 'complete' && job.result) renderResults(card, job.result);
@@ -756,29 +1061,233 @@ function renderResults(card, result) {
     box.appendChild(w);
   }
 
-  (cl.platforms || []).forEach(p => box.appendChild(buildPlatformBlock(p)));
+  (cl.platforms || []).forEach(p => box.appendChild(buildPlatformBlock(p, card)));
 
   if (cl.raw_response)  box.appendChild(buildRaw('Raw Response', cl.raw_response));
   if (cl.raw_analysis)  box.appendChild(buildRaw('Raw Analysis', JSON.stringify(cl.raw_analysis, null, 2)));
 
   const tx = result.transcription;
   if (tx && tx.text) box.appendChild(buildRaw('Transcription', tx.text));
+
+  // Post-to-social panel
+  const post = buildPostPanel(card._jobId, result, card._postResults || {});
+  card._postPanel = post;
+  box.appendChild(post);
 }
 
-function buildPlatformBlock(p) {
+function buildPlatformBlock(p, card) {
   const block = document.createElement('div');
   block.className = `platform-block ${p.platform}`;
+  block._platform = p.platform;
+  block._data = p;
 
   const name = el('div', 'platform-name');
   name.textContent = p.platform === 'tiktok' ? '▲ TikTok' : '▶ YouTube';
   block.appendChild(name);
 
-  if (p.titles    && p.titles.length)    block.appendChild(buildSection('Titles',      p.titles.map(t => ritem(t))));
-  if (p.description)                     block.appendChild(buildSection('Description', [ritem(p.description)]));
-  if (p.hashtags  && p.hashtags.length)  block.appendChild(buildSection('Hashtags',    [ritem(p.hashtags.join(' '))]));
-  if (p.keywords  && p.keywords.length)  block.appendChild(buildSection('Keywords',    [ritem(p.keywords.join(', '))]));
+  // Track selected title index per platform on the card
+  card._selectedTitleIdx = card._selectedTitleIdx || {};
+  if (card._selectedTitleIdx[p.platform] === undefined) card._selectedTitleIdx[p.platform] = 0;
 
+  if (p.titles && p.titles.length) {
+    const titlesSec = buildSection('Titles', p.titles.map((t, idx) => titleRow(t, idx, p.platform, card)));
+    block._titlesSection = titlesSec;
+    block.appendChild(titlesSec);
+  }
+
+  const descSec = buildSection('Description', [ritem(p.description || '')]);
+  block._descSection = descSec;
+  if (p.description) block.appendChild(descSec);
+
+  const hashSec = buildSection('Hashtags', [ritem((p.hashtags || []).join(' '))]);
+  block._hashSection = hashSec;
+  if (p.hashtags && p.hashtags.length) block.appendChild(hashSec);
+
+  const kwSec = buildSection('Keywords', [ritem((p.keywords || []).join(', '))]);
+  block._kwSection = kwSec;
+  if (p.keywords && p.keywords.length) block.appendChild(kwSec);
+
+  block.appendChild(buildRegenPanel(card, p.platform, block));
   return block;
+}
+
+function titleRow(text, idx, platform, card) {
+  const row = el('div', 'ritem title-row');
+  const radio = document.createElement('input');
+  radio.type = 'radio';
+  radio.name = `title_${card._jobId}_${platform}`;
+  radio.value = String(idx);
+  if (card._selectedTitleIdx[platform] === idx) {
+    radio.checked = true;
+    row.classList.add('selected');
+  }
+  const span = el('span', 'rtext');
+  span.textContent = text;
+  const btn = el('button', 'copy-btn');
+  btn.textContent = 'Copy';
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    navigator.clipboard.writeText(span.textContent).then(() => {
+      btn.textContent = 'Copied!';
+      btn.classList.add('ok');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('ok'); }, 1400);
+    });
+  });
+  const select = () => {
+    card._selectedTitleIdx[platform] = idx;
+    radio.checked = true;
+    row.parentElement.querySelectorAll('.title-row').forEach(r => r.classList.remove('selected'));
+    row.classList.add('selected');
+    syncPostPanelTitle(card, platform, span.textContent);
+  };
+  row.addEventListener('click', e => { if (e.target !== btn) select(); });
+  radio.addEventListener('change', select);
+  row.appendChild(radio);
+  row.appendChild(span);
+  row.appendChild(btn);
+  return row;
+}
+
+function syncPostPanelTitle(card, platform, titleText) {
+  if (!card._postPanel) return;
+  // YouTube uses its own block's title; X falls back to TikTok's title (or YouTube if no TikTok)
+  if (platform === 'youtube') {
+    const el = card._postPanel.querySelector(`[name="title_${card._jobId}_yt"]`);
+    if (el) { el.value = titleText; el.dispatchEvent(new Event('input')); }
+  }
+  if (platform === 'tiktok' || platform === 'youtube') {
+    // Rebuild X tweet text only if X is connected AND the source platform matches our preferred fallback
+    const xBlock = card._postPanel.querySelector('.post-platform.x');
+    if (xBlock) {
+      const blocks = ((card._lastResult || {}).claude || {}).platforms || [];
+      const tk = blocks.find(b => b.platform === 'tiktok');
+      const yt = blocks.find(b => b.platform === 'youtube');
+      const src = tk || yt;
+      if (src && src.platform === platform) {
+        const tagStr = (src.hashtags || []).join(' ');
+        const text = (titleText + ' ' + tagStr).trim().slice(0, 280);
+        const xInput = xBlock.querySelector(`[name="text_${card._jobId}_x"]`);
+        if (xInput) { xInput.value = text; xInput.dispatchEvent(new Event('input')); }
+      }
+    }
+  }
+}
+
+function buildRegenPanel(card, platform, block) {
+  const wrap = el('div', 'regen-panel');
+  const head = el('div', 'regen-head');
+  head.textContent = '🔄 Regenerate sections';
+  wrap.appendChild(head);
+
+  const checks = el('div', 'regen-checks');
+  const mkCheck = (val, label) => {
+    const lbl = document.createElement('label');
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.value = val;
+    lbl.appendChild(cb);
+    lbl.appendChild(document.createTextNode(' ' + label));
+    return lbl;
+  };
+  checks.appendChild(mkCheck('description', 'Description'));
+  checks.appendChild(mkCheck('hashtags', 'Hashtags'));
+  checks.appendChild(mkCheck('keywords', 'Keywords'));
+  wrap.appendChild(checks);
+
+  const fb = document.createElement('textarea');
+  fb.className = 'regen-feedback';
+  fb.placeholder = 'What would you like changed? (optional)';
+  fb.rows = 2;
+  wrap.appendChild(fb);
+
+  const btn = document.createElement('button');
+  btn.className = 'regen-btn';
+  btn.textContent = 'Regenerate';
+  const status = el('span', 'regen-status');
+  btn.addEventListener('click', async () => {
+    const sections = [...checks.querySelectorAll('input:checked')].map(c => c.value);
+    if (!sections.length) {
+      status.className = 'regen-status err';
+      status.textContent = 'Pick at least one section.';
+      return;
+    }
+    btn.disabled = true;
+    status.className = 'regen-status';
+    status.textContent = 'Regenerating…';
+    try {
+      const res = await fetch(`/api/jobs/${card._jobId}/regenerate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ platform, sections, feedback: fb.value }),
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      applyRegenUpdate(card, block, data.updated || {});
+      status.className = 'regen-status ok';
+      status.textContent = '✓ Updated';
+      setTimeout(() => { status.textContent = ''; }, 2500);
+    } catch (e) {
+      status.className = 'regen-status err';
+      status.textContent = '✗ ' + e.message;
+    } finally {
+      btn.disabled = false;
+    }
+  });
+  wrap.appendChild(btn);
+  wrap.appendChild(status);
+  return wrap;
+}
+
+function applyRegenUpdate(card, block, updated) {
+  const data = block._data;
+  if ('description' in updated) {
+    data.description = updated.description;
+    if (block._descSection) {
+      block._descSection.querySelector('.rtext').textContent = updated.description;
+      if (!block.contains(block._descSection)) block.insertBefore(block._descSection, block.querySelector('.regen-panel'));
+    }
+  }
+  if ('hashtags' in updated) {
+    data.hashtags = updated.hashtags;
+    if (block._hashSection) {
+      block._hashSection.querySelector('.rtext').textContent = (updated.hashtags || []).join(' ');
+      if (!block.contains(block._hashSection)) block.insertBefore(block._hashSection, block.querySelector('.regen-panel'));
+    }
+  }
+  if ('keywords' in updated) {
+    data.keywords = updated.keywords;
+    if (block._kwSection) {
+      block._kwSection.querySelector('.rtext').textContent = (updated.keywords || []).join(', ');
+      if (!block.contains(block._kwSection)) block.insertBefore(block._kwSection, block.querySelector('.regen-panel'));
+    }
+  }
+  // Sync post-panel inputs that mirror this platform's content
+  syncPostPanelFromPlatform(card, data);
+}
+
+function syncPostPanelFromPlatform(card, p) {
+  if (!card._postPanel) return;
+  if (p.platform === 'youtube') {
+    const desc = card._postPanel.querySelector(`[name="desc_${card._jobId}_yt"]`);
+    if (desc && 'description' in p) { desc.value = p.description || ''; desc.dispatchEvent(new Event('input')); }
+    const tags = card._postPanel.querySelector(`[name="tags_${card._jobId}_yt"]`);
+    if (tags && p.hashtags) { tags.value = (p.hashtags || []).join(' '); tags.dispatchEvent(new Event('input')); }
+  }
+  // X tweet text mirrors selected title + (tiktok or youtube) hashtags
+  const xInput = card._postPanel.querySelector(`[name="text_${card._jobId}_x"]`);
+  if (xInput) {
+    const blocks = ((card._lastResult || {}).claude || {}).platforms || [];
+    const tk = blocks.find(b => b.platform === 'tiktok');
+    const yt = blocks.find(b => b.platform === 'youtube');
+    const src = tk || yt;
+    if (src) {
+      const titleIdx = (card._selectedTitleIdx || {})[src.platform] || 0;
+      const title = (src.titles && src.titles[titleIdx]) || '';
+      const text = (title + ' ' + (src.hashtags || []).join(' ')).trim().slice(0, 280);
+      xInput.value = text;
+      xInput.dispatchEvent(new Event('input'));
+    }
+  }
 }
 
 function buildSection(label, items) {
@@ -835,6 +1344,307 @@ function esc(s) {
   return d.innerHTML;
 }
 
+// ── Connected Accounts ───────────────────────────────────────
+const PLATFORM_META = {
+  youtube: { label: 'YouTube' },
+  x:       { label: 'X' },
+};
+
+let authStatus = { connected: {}, configured: {} };
+
+async function refreshAuthStatus() {
+  try {
+    const res = await fetch('/api/auth/status');
+    authStatus = await res.json();
+  } catch (e) { console.error('auth status failed', e); }
+  renderAccountsPanel();
+  // Re-render post panels on any visible completed cards
+  Object.values(cards).forEach(c => {
+    if (c._postPanel && c._jobId) {
+      const fresh = buildPostPanel(c._jobId, c._lastResult, c._postResults || {});
+      c._postPanel.replaceWith(fresh);
+      c._postPanel = fresh;
+    }
+  });
+}
+
+function renderAccountsPanel() {
+  const wrap = $('#accountsList');
+  wrap.innerHTML = '';
+  Object.keys(PLATFORM_META).forEach(p => {
+    const meta = PLATFORM_META[p];
+    const connected = !!authStatus.connected?.[p];
+    const configured = !!authStatus.configured?.[p];
+    const row = el('div', 'acc-row' + (connected ? ' on' : '') + (configured ? '' : ' unconfigured'));
+    const dot = el('span', 'acc-dot');
+    const name = el('span', 'acc-name');
+    name.textContent = meta.label;
+    const status = document.createElement('span');
+    status.style.color = 'var(--text-muted)';
+    status.style.fontSize = '0.72rem';
+    if (!configured) status.textContent = 'no API keys';
+    else status.textContent = connected ? 'connected' : 'not connected';
+    const btn = document.createElement('button');
+    btn.className = 'acc-btn' + (connected ? ' danger' : '');
+    btn.textContent = connected ? 'Disconnect' : 'Connect';
+    btn.disabled = !configured;
+    if (!configured) btn.title = `Set ${p.toUpperCase()}_CLIENT_ID / _CLIENT_SECRET in .env`;
+    btn.addEventListener('click', () => connected ? disconnectPlatform(p) : connectPlatform(p));
+    row.appendChild(dot);
+    row.appendChild(name);
+    row.appendChild(status);
+    row.appendChild(btn);
+    wrap.appendChild(row);
+  });
+}
+
+function connectPlatform(platform) {
+  const w = 560, h = 720;
+  const left = (window.screen.width - w) / 2;
+  const top  = (window.screen.height - h) / 2;
+  window.open(`/api/auth/${platform}`, 'ytseo-auth',
+              `width=${w},height=${h},left=${left},top=${top}`);
+}
+
+async function disconnectPlatform(platform) {
+  try {
+    await fetch(`/api/auth/${platform}`, { method: 'DELETE' });
+  } catch (e) { console.error(e); }
+  await refreshAuthStatus();
+}
+
+window.addEventListener('message', e => {
+  if (e.data && e.data.type === 'ytseo-auth') {
+    refreshAuthStatus();
+  }
+});
+
+// ── Post-to-Social ───────────────────────────────────────────
+function buildPostPanel(jobId, result, postResults) {
+  const card = cards[jobId];
+  if (card) card._lastResult = result;
+  const wrap = el('div', 'post-panel');
+
+  const head = el('div', 'post-head');
+  const h = document.createElement('h4');
+  h.textContent = '📤 Post to Social';
+  head.appendChild(h);
+  wrap.appendChild(head);
+
+  const connected = Object.keys(PLATFORM_META).filter(p => authStatus.connected?.[p]);
+  if (!connected.length) {
+    const empty = el('div', 'post-empty');
+    empty.innerHTML = 'No accounts connected. <a href="#" id="connectLink_' + jobId + '">Connect an account</a> to post directly from here.';
+    wrap.appendChild(empty);
+    setTimeout(() => {
+      const a = document.getElementById('connectLink_' + jobId);
+      if (a) a.addEventListener('click', ev => {
+        ev.preventDefault();
+        $('#accountsPanel').scrollIntoView({behavior: 'smooth', block: 'center'});
+      });
+    }, 0);
+    return wrap;
+  }
+
+  const cl = (result && result.claude) || {};
+  const blocks = cl.platforms || [];
+  const ytSrc = blocks.find(b => b.platform === 'youtube') || blocks[0] || {};
+  const tkSrc = blocks.find(b => b.platform === 'tiktok')  || ytSrc;
+
+  connected.forEach(p => {
+    const block = el('div', 'post-platform ' + p);
+
+    const ph = el('div', 'post-platform-head');
+    const name = el('div', 'post-platform-name');
+    name.textContent = PLATFORM_META[p].label;
+    ph.appendChild(name);
+    block.appendChild(ph);
+
+    const ytIdx = (card && card._selectedTitleIdx && card._selectedTitleIdx.youtube) || 0;
+    const tkIdx = (card && card._selectedTitleIdx && card._selectedTitleIdx.tiktok) || 0;
+
+    if (p === 'youtube') {
+      const title = (ytSrc.titles && ytSrc.titles[ytIdx]) || (ytSrc.titles && ytSrc.titles[0]) || '';
+      const desc = ytSrc.description || '';
+      const tags = (ytSrc.hashtags || []).join(' ');
+      block.appendChild(postRow('Title', 'input', { name: `title_${jobId}_yt`, value: title, max: 100 }));
+      block.appendChild(postRow('Description', 'textarea', { name: `desc_${jobId}_yt`, value: desc, max: 5000 }));
+      block.appendChild(postRow('Hashtags', 'input', { name: `tags_${jobId}_yt`, value: tags }));
+      block.appendChild(postRow('Privacy', 'select', {
+        name: `priv_${jobId}_yt`,
+        value: 'private',
+        options: [['private', 'Private'], ['unlisted', 'Unlisted'], ['public', 'Public']],
+      }));
+      block.appendChild(postRow('Schedule (optional)', 'datetime-local', {
+        name: `pub_${jobId}_yt`,
+        value: '',
+        hint: 'Leave blank to publish immediately. If set, video uploads as Private and becomes Public at this time.',
+      }));
+    } else if (p === 'x') {
+      const xIdx = tkSrc.platform === 'tiktok' ? tkIdx : ytIdx;
+      const title = (tkSrc.titles && tkSrc.titles[xIdx]) || (tkSrc.titles && tkSrc.titles[0]) || '';
+      const hashtags = (tkSrc.hashtags || []).join(' ');
+      const initial = (title + ' ' + hashtags).trim().slice(0, 280);
+      block.appendChild(postRow('Tweet text', 'textarea', { name: `text_${jobId}_x`, value: initial, max: 280, count: true }));
+    }
+
+    const btn = document.createElement('button');
+    btn.className = 'post-btn';
+    btn.textContent = 'Post to ' + PLATFORM_META[p].label;
+    btn.addEventListener('click', () => submitPost(jobId, p, block, btn));
+    block.appendChild(btn);
+
+    // existing result?
+    const existing = postResults[p];
+    if (existing) {
+      block.appendChild(buildPostStatus(existing));
+      if (existing.status === 'posted') btn.disabled = true, btn.textContent = 'Posted';
+    }
+
+    wrap.appendChild(block);
+  });
+
+  return wrap;
+}
+
+function postRow(label, kind, opts) {
+  const row = el('div', 'post-row');
+  const lbl = document.createElement('label');
+  lbl.textContent = label;
+  row.appendChild(lbl);
+
+  let input;
+  if (kind === 'textarea') {
+    input = document.createElement('textarea');
+    input.rows = 3;
+  } else if (kind === 'select') {
+    input = document.createElement('select');
+    (opts.options || []).forEach(([v, t]) => {
+      const o = document.createElement('option');
+      o.value = v;
+      o.textContent = t;
+      input.appendChild(o);
+    });
+  } else if (kind === 'datetime-local') {
+    input = document.createElement('input');
+    input.type = 'datetime-local';
+  } else {
+    input = document.createElement('input');
+    input.type = 'text';
+  }
+  input.name = opts.name;
+  input.value = opts.value || '';
+  row.appendChild(input);
+
+  if (opts.hint) {
+    const hint = el('div', 'char-count');
+    hint.style.textAlign = 'left';
+    hint.textContent = opts.hint;
+    row.appendChild(hint);
+  }
+
+  if (opts.count || opts.max) {
+    const count = el('div', 'char-count');
+    const update = () => {
+      const n = (input.value || '').length;
+      count.textContent = opts.max ? `${n} / ${opts.max}` : `${n} chars`;
+      if (opts.max && n > opts.max) count.classList.add('over');
+      else count.classList.remove('over');
+    };
+    update();
+    input.addEventListener('input', update);
+    row.appendChild(count);
+  }
+  return row;
+}
+
+function buildPostStatus(res) {
+  const div = el('div', 'post-status ' + (res.status === 'posted' ? 'ok' : 'err'));
+  if (res.status === 'posted') {
+    div.innerHTML = '✓ Posted' + (res.url ? ` — <a href="${esc(res.url)}" target="_blank" rel="noopener">${esc(res.url)}</a>` : '');
+  } else {
+    div.textContent = '✗ ' + (res.error || 'failed');
+  }
+  return div;
+}
+
+async function submitPost(jobId, platform, blockEl, btn) {
+  const card = cards[jobId];
+  const overrides = collectOverrides(jobId, platform, blockEl);
+
+  // Show "posting" inline
+  const prevStatus = blockEl.querySelector('.post-status');
+  if (prevStatus) prevStatus.remove();
+  const ps = el('div', 'post-status posting');
+  ps.textContent = 'Posting…';
+  blockEl.appendChild(ps);
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(`/api/jobs/${jobId}/post`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ platforms: [platform], overrides: { [platform]: overrides } }),
+    });
+    const data = await res.json();
+    const result = (data.results || {})[platform];
+    if (card) card._postResults = data.post_results || card._postResults || {};
+    ps.remove();
+    blockEl.appendChild(buildPostStatus(result || { status: 'error', error: data.error || 'unknown error' }));
+    if (result && result.status === 'posted') btn.textContent = 'Posted';
+    else btn.disabled = false;
+  } catch (e) {
+    ps.remove();
+    blockEl.appendChild(buildPostStatus({ status: 'error', error: String(e) }));
+    btn.disabled = false;
+  }
+}
+
+function collectOverrides(jobId, platform, blockEl) {
+  const get = name => {
+    const e = blockEl.querySelector(`[name="${name}"]`);
+    return e ? e.value : '';
+  };
+  if (platform === 'youtube') {
+    const tagStr = get(`tags_${jobId}_yt`);
+    const hashtags = tagStr.split(/\s+/).filter(Boolean);
+    const pubLocal = get(`pub_${jobId}_yt`);
+    let publish_at = '';
+    if (pubLocal) {
+      const d = new Date(pubLocal);
+      if (!isNaN(d.getTime())) publish_at = d.toISOString().replace(/\.\d{3}Z$/, 'Z');
+    }
+    return {
+      title: get(`title_${jobId}_yt`),
+      description: get(`desc_${jobId}_yt`),
+      hashtags,
+      privacy: get(`priv_${jobId}_yt`),
+      publish_at,
+    };
+  }
+  if (platform === 'x') {
+    return { text: get(`text_${jobId}_x`) };
+  }
+  return {};
+}
+
+function onPostResult(card, platform, result) {
+  card._postResults = card._postResults || {};
+  card._postResults[platform] = result;
+  // If the post panel is rendered, update its status inline
+  if (!card._postPanel) return;
+  const block = card._postPanel.querySelector('.post-platform.' + platform);
+  if (!block) return;
+  const prev = block.querySelector('.post-status');
+  if (prev) prev.remove();
+  block.appendChild(buildPostStatus(result));
+  const btn = block.querySelector('.post-btn');
+  if (btn) {
+    btn.disabled = result.status === 'posted';
+    if (result.status === 'posted') btn.textContent = 'Posted';
+  }
+}
+
 // ── Recover jobs on load ─────────────────────────────────────
 async function recover() {
   try {
@@ -844,6 +1654,7 @@ async function recover() {
   } catch (e) { console.error(e); }
 }
 
+refreshAuthStatus();
 recover();
 connectWS();
 </script>

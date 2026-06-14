@@ -17,6 +17,7 @@ class JobStatus(str, Enum):
     analyzing = "analyzing"
     generating = "generating"
     complete = "complete"
+    posting = "posting"
     error = "error"
     cancelled = "cancelled"
 
@@ -28,6 +29,7 @@ STAGE_PCT = {
     "analyzing": 70,
     "generating": 90,
     "complete": 100,
+    "posting": 100,
 }
 
 
@@ -50,6 +52,8 @@ class JobState:
         self.result: dict | None = None
         self.error: str | None = None
         self.created_at: float = time.time()
+        # Per-platform posting results, e.g. {"youtube": {"status": "posted", "url": "..."}}
+        self.post_results: dict[str, dict] = {}
 
     def to_dict(self) -> dict:
         return {
@@ -65,6 +69,7 @@ class JobState:
             "tone": self.tone,
             "num_titles": self.num_titles,
             "model": self.model,
+            "post_results": self.post_results,
         }
 
 

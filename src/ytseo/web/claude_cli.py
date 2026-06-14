@@ -175,6 +175,107 @@ def generate_with_claude(
     return _generate_with_claude_cli(seo_analysis, platform, tone, num_titles, timeout)
 
 
+_REGEN_SYSTEM_PROMPT = """\
+You are an SEO content reviser. The user has existing generated content for one
+platform and wants ONLY specific sections regenerated based on their feedback.
+
+Rules:
+1. Only regenerate the sections listed under SECTIONS TO REGENERATE.
+2. Keep tone, language, and platform constraints consistent.
+3. Stay grounded in the transcription — no fabricated claims.
+4. Never use #fyp, #viral, #foryou, #trending. Prefer niche-specific hashtags.
+5. Respect the platform's character limits.
+
+Return ONLY a JSON object containing the regenerated sections. Schema:
+{
+  "description": "...",          // include only if requested
+  "hashtags": ["#...", ...],     // include only if requested
+  "keywords": ["...", ...]       // include only if requested
+}
+No markdown fences, no commentary.\
+"""
+
+
+def regenerate_sections(
+    seo_analysis: dict,
+    platform_block: dict,
+    sections: list[str],
+    feedback: str,
+    model: str | None = None,
+    timeout: int = 120,
+) -> dict:
+    """Regenerate specific fields on a platform block via the LLM.
+
+    Returns a dict with only the keys the LLM updated (subset of
+    ``description`` / ``hashtags`` / ``keywords``).
+    """
+    sections = [s for s in sections if s in ("description", "hashtags", "keywords")]
+    if not sections:
+        return {}
+
+    token = _github_token()
+    transcription = seo_analysis.get("transcription_text", "")
+    keywords = ", ".join(k["word"] for k in seo_analysis.get("detected_keywords", [])[:10])
+    rules = seo_analysis.get("platform_rules", [])
+
+    user_prompt = (
+        f"--- PLATFORM ---\n{platform_block.get('platform', 'youtube')}\n\n"
+        f"--- VIDEO TRANSCRIPTION ---\n{transcription}\n\n"
+        f"--- DETECTED KEYWORDS ---\n{keywords}\n\n"
+        f"--- PLATFORM RULES ---\n{json.dumps(rules, indent=2)}\n\n"
+        f"--- CURRENT CONTENT ---\n{json.dumps({k: platform_block.get(k) for k in ('description', 'hashtags', 'keywords')}, indent=2)}\n\n"
+        f"--- SECTIONS TO REGENERATE ---\n{', '.join(sections)}\n\n"
+        f"--- USER FEEDBACK ---\n{feedback or '(no specific feedback — improve quality)'}\n"
+    )
+
+    if token:
+        try:
+            from openai import OpenAI
+        except ImportError:
+            raise RuntimeError("openai package not installed — run: uv sync")
+        client = OpenAI(
+            base_url="https://models.inference.ai.azure.com",
+            api_key=token,
+            timeout=timeout,
+        )
+        resolved = model or _default_github_model()
+        response = client.chat.completions.create(
+            model=resolved,
+            messages=[
+                {"role": "system", "content": _REGEN_SYSTEM_PROMPT},
+                {"role": "user", "content": user_prompt},
+            ],
+        )
+        content = (response.choices[0].message.content or "").strip()
+    elif _claude_available():
+        result = subprocess.run(
+            ["claude", "--print", "-p", f"{_REGEN_SYSTEM_PROMPT}\n\n{user_prompt}"],
+            capture_output=True,
+            timeout=timeout,
+        )
+        if result.returncode != 0:
+            raise RuntimeError(result.stderr.decode("utf-8", errors="replace")[:300])
+        content = result.stdout.decode("utf-8", errors="replace").strip()
+    else:
+        raise RuntimeError("No LLM available — set GITHUB_TOKEN or install claude CLI")
+
+    if content.startswith("```"):
+        lines = content.split("\n")[1:]
+        if lines and lines[-1].strip() == "```":
+            lines = lines[:-1]
+        content = "\n".join(lines)
+
+    try:
+        parsed = json.loads(content)
+    except json.JSONDecodeError as e:
+        raise RuntimeError(f"LLM response was not valid JSON: {e}") from e
+
+    if not isinstance(parsed, dict):
+        raise RuntimeError("LLM response was not a JSON object")
+
+    return {k: parsed[k] for k in sections if k in parsed}
+
+
 # ---------------------------------------------------------------------------
 # Shared helpers
 # ---------------------------------------------------------------------------

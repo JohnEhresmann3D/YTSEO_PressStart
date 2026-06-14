@@ -39,12 +39,27 @@ app.mount("/", StaticFiles(directory=str(STATIC_DIR), html=True), name="static")
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="YTSEO web server")
-    parser.add_argument("--host", default="127.0.0.1", help="Bind host (default: 127.0.0.1)")
-    parser.add_argument("--port", type=int, default=8000, help="Bind port (default: 8000)")
+    parser.add_argument(
+        "--host",
+        default=os.environ.get("HOST", "127.0.0.1"),
+        help="Bind host (default: 127.0.0.1, or $HOST)",
+    )
+    parser.add_argument(
+        "--port",
+        type=int,
+        default=int(os.environ.get("PORT", "8000")),
+        help="Bind port (default: 8000, or $PORT)",
+    )
     parser.add_argument(
         "--github-token",
         metavar="TOKEN",
         help="GitHub personal access token for GitHub Models API (overrides .env / GITHUB_TOKEN)",
+    )
+    parser.add_argument(
+        "--proxy-headers",
+        action="store_true",
+        default=os.environ.get("PROXY_HEADERS", "").lower() in ("1", "true", "yes"),
+        help="Trust X-Forwarded-* headers (enable when running behind a reverse proxy / Railway / DO App Platform). Also enabled via PROXY_HEADERS=1.",
     )
     args = parser.parse_args()
 
@@ -60,7 +75,13 @@ def main() -> None:
     else:
         log.info("GitHub Models API not configured — will use claude CLI if available")
 
-    uvicorn.run(app, host=args.host, port=args.port)
+    uvicorn.run(
+        app,
+        host=args.host,
+        port=args.port,
+        proxy_headers=args.proxy_headers,
+        forwarded_allow_ips="*" if args.proxy_headers else None,
+    )
 
 
 if __name__ == "__main__":

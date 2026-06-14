@@ -60,7 +60,30 @@ Video → ffmpeg (16kHz mono WAV) → faster-whisper → keyword extraction + pl
 | GET | `/api/jobs` | List all jobs |
 | GET | `/api/jobs/{job_id}` | Single job detail |
 | DELETE | `/api/jobs/{job_id}` | Cancel or delete job |
-| WebSocket | `/ws` | Broadcast progress to all clients |
+| POST | `/api/jobs/{job_id}/post` | Post completed job to YouTube / X |
+| GET | `/api/auth/status` | Connection + config status per platform |
+| GET | `/api/auth/{platform}` | Start OAuth — 302s to provider consent |
+| GET | `/api/auth/{platform}/callback` | OAuth redirect target |
+| DELETE | `/api/auth/{platform}` | Forget stored token |
+| WebSocket | `/ws` | Broadcast progress + `post_result` events |
+
+### Auto-Posting
+
+`src/ytseo/platforms/` contains per-platform OAuth + upload modules. Currently
+supported: **YouTube** (Data API v3, `videos.insert` resumable upload) and
+**X** (API v2, chunked `/2/media/upload` + `/2/tweets`).
+
+- `web/oauth.py` — JSON-file token persistence at `data/tokens.json` (gitignored),
+  in-memory pending-flow tracker keyed by OAuth `state` (30-min TTL).
+- `web/routes.py` — `_post_youtube` / `_post_x` map the completed job's SEO output
+  onto each platform's upload call. X falls back to the TikTok block for caption
+  text since it has no dedicated SEO output.
+- Required redirect URIs:
+  - YouTube: `http://127.0.0.1:8000/api/auth/youtube/callback`
+  - X: `http://127.0.0.1:8000/api/auth/x/callback`
+- X's `media.write` scope is **not** available on the free developer tier — Basic
+  tier or above is required for video uploads. Title/description for YouTube and
+  tweet text for X can be edited inline before posting.
 
 ### SEO Agent
 
@@ -75,4 +98,6 @@ Loaded from `.env` (via python-dotenv) at startup. CLI flag `--github-token` tak
 | `GITHUB_TOKEN` | — | GitHub PAT for GitHub Models API (enables AI generation without claude CLI) |
 | `GITHUB_MODEL` | `gpt-4o` | GitHub Models model name |
 | `WHISPER_MODEL` | `base` | faster-whisper model size |
-| `YTSEO_DATA_DIR` | `<project_root>/data` | Base path for uploads, audio, models |
+| `YTSEO_DATA_DIR` | `<project_root>/data` | Base path for uploads, audio, models, **and `tokens.json`** |
+| `YOUTUBE_CLIENT_ID` / `YOUTUBE_CLIENT_SECRET` | — | OAuth client for posting to YouTube |
+| `X_CLIENT_ID` / `X_CLIENT_SECRET` | — | OAuth 2.0 client for posting to X (secret optional with PKCE-only public clients) |

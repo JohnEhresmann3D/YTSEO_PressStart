@@ -219,6 +219,75 @@ You can drop multiple videos at once and they'll queue up automatically.
 
 > **Heads up on first use:** The first video will be slower than normal because it downloads the AI transcription model (~150 MB). Every video after that will be much faster.
 
+### Picking the title you want
+
+Each generated title appears as a selectable radio option. Click any title to make it the chosen one — if you have YouTube or X connected, the **Post to Social** panel at the bottom updates automatically to use whichever title you picked. No copy/paste needed.
+
+### Regenerating just a section
+
+Don't like the description? Want different hashtags? Each platform block has a **🔄 Regenerate sections** panel:
+
+![Regenerate Panel](docs/screenshots/regenerate-panel.png)
+
+1. Check the boxes for the sections you want redone (Description, Hashtags, Keywords — any combination)
+2. Optionally type what you'd like changed ("make it shorter", "more energetic", "drop the GoPro mention", etc.)
+3. Click **Regenerate**
+
+Only the selected sections are re-prompted — your title selection and everything else stays put.
+
+### Posting directly from the app
+
+Once a platform is connected (see below), each completed job shows a **Post to Social** panel:
+
+![Post to Social](docs/screenshots/post-panel.png)
+
+- **Title / Description / Hashtags** — pre-filled from the SEO output and fully editable
+- **Privacy** (YouTube) — Private, Unlisted, or Public
+- **Schedule (optional)** (YouTube) — pick a future date/time and the video uploads as Private now and automatically goes Public at that moment. Leave blank to publish right away.
+- Character counts update live so you don't blow past platform limits
+
+---
+
+## Auto-posting to YouTube and X (optional)
+
+YTSEO can post a finished video straight to YouTube or X (Twitter) using the generated SEO content — no copy/paste needed. This is optional; if you skip it, the app still works as a content generator.
+
+### YouTube
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com/) → create a project (or pick one)
+2. **APIs & Services → Library** → enable **YouTube Data API v3**
+3. **APIs & Services → Credentials** → **Create Credentials** → **OAuth client ID** → **Web application**
+4. Add this **Authorized redirect URI** exactly:
+   ```
+   http://127.0.0.1:8000/api/auth/youtube/callback
+   ```
+5. Copy the **Client ID** and **Client Secret** into your `.env`:
+   ```
+   YOUTUBE_CLIENT_ID=...
+   YOUTUBE_CLIENT_SECRET=...
+   ```
+6. Restart the app, click **Connect** next to YouTube in the UI, sign in with the Google account that owns your channel
+
+### X (Twitter)
+
+1. Go to [developer.x.com](https://developer.x.com/) → create a Project + App
+2. Open **User authentication settings** → enable **OAuth 2.0**
+3. Required scopes: `tweet.read tweet.write users.read media.write offline.access`
+4. Set the **Callback URL** to:
+   ```
+   http://127.0.0.1:8000/api/auth/x/callback
+   ```
+5. Copy the **Client ID** (and Client Secret if you chose a confidential client) into your `.env`:
+   ```
+   X_CLIENT_ID=...
+   X_CLIENT_SECRET=
+   ```
+6. Restart the app, click **Connect** next to X in the UI
+
+> **Heads up:** Video uploads on X require the **Basic** developer tier or higher — the free tier does not include `media.write`.
+
+Tokens are stored locally in `data/tokens.json` (gitignored). You can disconnect a platform any time from the UI.
+
 ---
 
 ## Choosing an AI model
@@ -318,6 +387,14 @@ GITHUB_MODEL=gpt-4o
 
 # Optional — change transcription quality (default: base)
 WHISPER_MODEL=base
+
+# Optional — auto-posting to YouTube
+YOUTUBE_CLIENT_ID=
+YOUTUBE_CLIENT_SECRET=
+
+# Optional — auto-posting to X (Twitter)
+X_CLIENT_ID=
+X_CLIENT_SECRET=
 ```
 
 ---
