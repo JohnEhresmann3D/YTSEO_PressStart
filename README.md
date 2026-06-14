@@ -3,6 +3,8 @@
 
 > Drop a video. Get ready-to-paste titles, descriptions, and hashtags for TikTok and YouTube — in seconds.
 
+![YTSEO App Overview](docs/screenshots/app-overview.png)
+
 Never stare at a blank "Add a description" box again. YTSEO listens to your video, figures out what it's actually about, and writes platform-optimized SEO content for you. It runs on your own computer — your video never gets uploaded anywhere.
 
 ---
@@ -198,13 +200,20 @@ That means everything is working. 🎉
 
 ## How to use it
 
+![Settings Panel](docs/screenshots/settings-panel.png)
+
 1. **Platform** — choose TikTok, YouTube, or Both
 2. **Tone** — pick the vibe: Engaging, Humorous, Educational, Controversial, or Storytelling
 3. **Titles** — how many title options you want (up to 10)
 4. **Model** — which AI model to use (`gpt-4o` is the default and works great)
+
+![Drop Zone](docs/screenshots/dropzone.png)
+
 5. **Drop your video** onto the big upload area, or click it to browse your files
 6. Watch the progress bar — it'll go through: extracting audio → transcribing → analyzing → generating
 7. When it's done, click **Copy** next to any title, description, or hashtag set to copy it instantly
+
+![Results](docs/screenshots/results-view.png)
 
 You can drop multiple videos at once and they'll queue up automatically.
 
